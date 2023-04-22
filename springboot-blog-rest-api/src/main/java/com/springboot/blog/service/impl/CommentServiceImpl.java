@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,6 @@ import com.springboot.blog.entity.Post;
 import com.springboot.blog.exception.BlogApiException;
 import com.springboot.blog.exception.ResourceNotFoundException;
 import com.springboot.blog.payload.CommentDTO;
-import com.springboot.blog.payload.PostDTO;
 import com.springboot.blog.repository.CommentRepository;
 import com.springboot.blog.repository.exception.PostRepository;
 import com.springboot.blog.service.CommentService;
@@ -22,7 +22,8 @@ public class CommentServiceImpl implements CommentService{
 	
 	private CommentRepository commentRepository;
 	private PostRepository postRepository;
-	private ModelMapper mapper;
+	
+	 private ModelMapper mapper;
 
 
 	public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository, ModelMapper mapper) {
