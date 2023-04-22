@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.springboot.blog.payload.PostDTO;
 import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.service.PostService;
+import com.springboot.blog.utils.AppConstants;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -32,11 +33,10 @@ public class PostController {
 	
 	@GetMapping
 	public PostResponse getAllPosts(
-		@RequestParam(value="pageNo",defaultValue = "0", required = false) int pageNo,
-		@RequestParam(value="pageSize", defaultValue = "10", required = false) int pageSize,
-		@RequestParam(value="sortByParameter", defaultValue = "id", required = false) String sortBy,
-		@RequestParam(value="sortDirection", defaultValue = "asc", required = false) String sortDirection
-
+		@RequestParam(value="pageNo",defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+		@RequestParam(value="pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+		@RequestParam(value="sortByParameter", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+		@RequestParam(value="sortDirection", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDirection
 		
 		){
 		return postService.getAllPost(pageNo, pageSize, sortBy, sortDirection);
