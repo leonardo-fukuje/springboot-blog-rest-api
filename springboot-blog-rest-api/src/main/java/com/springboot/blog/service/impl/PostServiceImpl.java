@@ -3,11 +3,16 @@ package com.springboot.blog.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.springboot.blog.entity.Post;
 import com.springboot.blog.exception.ResourceNotFoundException;
 import com.springboot.blog.payload.PostDTO;
+import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.repository.exception.PostRepository;
 import com.springboot.blog.service.PostService;
 
@@ -33,9 +38,28 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<PostDTO> getAllPost() {
-		List<Post> posts = postRepository.findAll();
-		return posts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
+	public PostResponse getAllPost(int pageNo, int pageSize, String sortBy, String sortDirection) {
+		
+		Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+				: Sort.by(sortBy).descending();
+		
+		//criar instancia de paginação
+		Pageable pageable = PageRequest.of(pageNo, pageSize, sort) ;
+		
+		Page<Post> posts = postRepository.findAll(pageable);
+		
+		//get content for page object
+		List<Post> listOfPost = posts.getContent();
+		List<PostDTO> content = listOfPost.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
+		
+		PostResponse postResponse = new PostResponse();
+		postResponse.setContent(content);
+		postResponse.setPageNo(posts.getNumber());
+		postResponse.setPageSize(posts.getSize());
+		postResponse.setTotalPages(posts.getTotalPages());
+		postResponse.setTotalElements(posts.getTotalElements());
+		postResponse.setLast(posts.isLast());
+		return postResponse;
 		
 	}
 	
@@ -80,5 +104,6 @@ public class PostServiceImpl implements PostService {
 		Post post = postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post", "id", id));
 		postRepository.delete(post);
 	}
+
 
 }
