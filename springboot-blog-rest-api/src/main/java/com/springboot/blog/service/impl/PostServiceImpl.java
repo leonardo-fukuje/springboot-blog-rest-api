@@ -3,6 +3,7 @@ package com.springboot.blog.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,9 +22,12 @@ public class PostServiceImpl implements PostService {
 	
 	private PostRepository postRepository;
 	
+	private ModelMapper mapper;
+	
 	//Serve par omitir Autowired annotation
-	public PostServiceImpl(PostRepository postRepository) {
+	public PostServiceImpl(PostRepository postRepository, ModelMapper mapper) {
 		this.postRepository = postRepository;
+		this.mapper = mapper;
 	}
 
 	@Override
@@ -65,20 +69,24 @@ public class PostServiceImpl implements PostService {
 	
 //convert entity into dto
 	private PostDTO mapToDTO(Post post) {
-		PostDTO postDTO = new PostDTO();
-		postDTO.setId(post.getId());
-		postDTO.setTitle(post.getTitle());
-		postDTO.setDescription(post.getDescription());
-		postDTO.setContent(post.getContent());
+		PostDTO postDTO = mapper.map(post, PostDTO.class);
+//		
+//		PostDTO postDTO = new PostDTO();
+//		postDTO.setId(post.getId());
+//		postDTO.setTitle(post.getTitle());
+//		postDTO.setDescription(post.getDescription());
+//		postDTO.setContent(post.getContent());
 		return postDTO;
 	}
 	
 	private Post mapToEntity(PostDTO postDTO) {
-		Post post = new Post();
-		post.setId(postDTO.getId());
-		post.setTitle(postDTO.getTitle());
-		post.setDescription(postDTO.getDescription());
-		post.setContent(postDTO.getContent());
+		Post post = mapper.map(postDTO, Post.class);
+
+//		Post post = new Post();
+//		post.setId(postDTO.getId());
+//		post.setTitle(postDTO.getTitle());
+//		post.setDescription(postDTO.getDescription());
+//		post.setContent(postDTO.getContent());
 		return post;
 	}
 
